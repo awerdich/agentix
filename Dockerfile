@@ -34,15 +34,15 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-project
 
 # Install the project
-COPY src/agentix/__init__.py src/agentix
-COPY pyproject.toml uv.lock ./
+COPY src/agentix/__init__.py src/agentix/
+COPY pyproject.toml uv.lock README.md ./
 RUN uv sync --frozen
 
 # Link the Docker image automatically to the repository on GitHub
 LABEL org.opencontainers.image.source=git@github.com:awerdich/agentix.git
 
 # Copy bash scripts and set executable flags
-COPY /bash_scripts/* /run_scripts/
+COPY /bash-scripts/* /run_scripts/
 RUN chmod +x /run_scripts/*
 
 # Run the jupyter server
