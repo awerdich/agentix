@@ -3,7 +3,7 @@
 {
 	"name": "agentix-devcontainer",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"dockerComposeFile": "../docker-compose.build.yml",
+	"dockerComposeFile": "../docker-compose.yml",
     "service": "app",
     "workspaceFolder": "/app",
 
