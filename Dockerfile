@@ -1,0 +1,49 @@
+FROM python:3.12.13-slim
+
+# Install UV
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+ENV \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONFAULTHANDLER=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100 \
+    NO_COLOR=true \
+    UV_COMPILE_BYTECODE=1 \
+    UV_SYSTEM_PYTHON=true \
+    UV_PYTHON_DOWNLOADS=never \
+    UV_PYTHON_PREFERENCE=only-system \
+    UV_PYTHON=3.12 \
+    UV_LINK_MODE=copy \
+    UV_PROJECT_ENVIRONMENT=/usr/local
+
+# Ports for Jupyter Lab server
+EXPOSE 8888
+
+WORKDIR /app
+
+RUN apt-get -y update && \
+    apt-get -y install --no-install-recommends libgl1 libglib2.0-0 git build-essential && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install the project's dependencies using the lockfile and settings
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project
+
+# Install the project
+COPY src/agentix/__init__.py src/agentix
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen
+
+# Link the Docker image automatically to the repository on GitHub
+LABEL org.opencontainers.image.source=git@github.com:awerdich/agentix.git
+
+# Copy bash scripts and set executable flags
+COPY /bash_scripts/* /run_scripts/
+RUN chmod +x /run_scripts/*
+
+# Run the jupyter server
+CMD ["/bin/bash", "/run_scripts/docker_entry"]
