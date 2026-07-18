@@ -1,0 +1,25 @@
+services:
+  app:
+    image: agentix:0.0.1
+    container_name: agentix
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: 1
+            capabilities: [gpu]
+    build: 
+      context: .
+      network: host
+      dockerfile: Dockerfile
+    ipc: host
+    environment:
+      - DATA_DIR=/app/data
+    env_file:
+      - ./.env
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/app
+      - ${DATA_DIR}:/app/data
