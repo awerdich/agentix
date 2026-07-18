@@ -7,7 +7,13 @@ authors = [
     { name = "Andreas Werdich", email = "andreas_werdich@hms.harvard.edu" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "jupyterlab>=4.6.1",
+    "numpy>=2.5.1",
+    "openai>=2.46.0",
+    "pandas>=3.0.3",
+    "pyarrow>=25.0.0",
+]
 
 [project.scripts]
 agentix = "agentix:main"
