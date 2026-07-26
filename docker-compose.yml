@@ -1,7 +1,7 @@
 services:
-  app:
-    image: agentix:0.0.1
-    container_name: agentix
+  ollama:
+    image: docker.io/ollama/ollama:latest
+    restart: unless-stopped
     deploy:
       resources:
         reservations:
@@ -9,6 +9,40 @@ services:
           - driver: nvidia
             count: 1
             capabilities: [gpu]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_DEBUG=1
+    volumes:
+      - ollama_data:/root/.ollama   
+    networks:
+      ollama_network:
+        aliases:
+          - ollama
+    ports:
+      - '11434:11434'
+
+  open-webui:
+      image: ghcr.io/open-webui/open-webui:main
+      restart: unless-stopped
+      volumes:
+        - open_webui_data:/app/backend/data
+      depends_on:
+        - ollama
+      networks:
+        - ollama_network
+      ports:
+        - '3000:8080'
+      environment:
+        - 'OLLAMA_BASE_URL=http://ollama:11434'
+        - 'WEBUI_SECRET_KEY=1234'
+        - 'WEBUI_AUTH=False'
+
+  app:
+    image: agentix:0.0.1
+    container_name: agentix
     build: 
       context: .
       network: host
@@ -16,10 +50,22 @@ services:
     ipc: host
     environment:
       - DATA_DIR=/app/data
+      - HF_HOME=/app/data/hf-cache
     env_file:
       - ./.env
     ports:
       - "8888:8888"
+    networks:
+      - ollama_network
     volumes:
       - .:/app
       - ${DATA_DIR}:/app/data
+
+volumes:
+  ollama_data:
+    external: false
+  open_webui_data:
+    external: false
+networks:
+  ollama_network:
+    driver: bridge
