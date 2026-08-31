@@ -50,6 +50,7 @@ services:
       dockerfile: Dockerfile
     ipc: host
     environment:
+      - HOME=/app
       - DATA_DIR=/app/data
       - HF_HOME=/app/data/hf-cache
     env_file:
