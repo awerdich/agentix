@@ -77,11 +77,10 @@ class HMSModel:
                  timeout: int = 30):
         self.token = token
         self.model = model
-        if self.model is None:
-            self.model = self.list_models()[0]
         self.base_url = base_url
         self.timeout = timeout
-        self.models = self.list_models()
+        if self.model is None:
+            self.model = self.list_models()[0]
 
     def create_client(self):
         client = None
