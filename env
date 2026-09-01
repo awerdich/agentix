@@ -1,4 +1,7 @@
 DATA_DIR=/home/andreas/data/agentix_data
 AZURE_API_ENDPOINT=https://azure-ai.hms.edu
+HMS_API_ENDPOINT=https://ai-poc.hms.edu
 CLAUDE_CODE_OAUTH_TOKEN=claude_code_oauth_token
 AZURE_API_KEY=azure_api_key
+HMS_USER=hms_user
+HMS_PASS=hms_pass
