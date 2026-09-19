@@ -47,7 +47,7 @@ services:
     build: 
       context: .
       network: host
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.app
     ipc: host
     environment:
       - HOME=/app
