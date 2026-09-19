@@ -1,20 +1,25 @@
 services:
-  app:
-    image: agentix:0.0.1
-    container_name: agentix
-    build: 
-      context: .
-      network: host
-      dockerfile: Dockerfile
-    ipc: host
+  ollama:
+    image: docker.io/ollama/ollama:latest
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: 1
+            capabilities: [gpu]
     environment:
-      - HOME=/app
-      - DATA_DIR=/app/data
-      - HF_HOME=/app/data/hf-cache
-    env_file:
-      - .env
-    ports:
-      - "8888:8888"
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_DEBUG=1
     volumes:
-      - .:/app
-      - ${DATA_DIR}:/app/data
+      - ollama_data:/root/.ollama   
+    ports:
+      - '11434:11434'
+
+volumes:
+  ollama_data:
+    external: false
