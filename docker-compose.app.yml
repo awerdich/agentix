@@ -1,0 +1,20 @@
+services:
+  app:
+    image: agentix:0.0.1
+    container_name: agentix
+    build: 
+      context: .
+      network: host
+      dockerfile: Dockerfile.app
+    ipc: host
+    environment:
+      - HOME=/app
+      - DATA_DIR=/app/data
+      - HF_HOME=/app/data/hf-cache
+    env_file:
+      - ./.env
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/app
+      - ./data:/app/data
