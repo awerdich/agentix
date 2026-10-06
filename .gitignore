@@ -12,3 +12,34 @@ wheels/
 
 # Secrets
 .env
+
+# SSH and GPG keys
+.ssh/
+.gnupg/
+
+# Personal git identity
+.gitconfig
+
+# Shell history
+.bash_history
+
+# Devcontainer runtime markers
+.devcontainer/.onCreateCommandMarker
+.devcontainer/.postCreateCommandMarker
+.devcontainer/.postStartCommandMarker
+.devcontainer/.updateContentCommandMarker
+
+# IDE state
+.claude.json
+.claude/
+.cursor/
+.cursor-server/
+
+# Caches and local data
+.cache/
+.npm/
+.local/
+
+# Jupyter and IPython
+.ipython/
+.jupyter/
